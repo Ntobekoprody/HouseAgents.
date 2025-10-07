@@ -13,6 +13,20 @@ mobile/         # Kotlin/Jetpack Compose prototype scaffolding (see below)
 .github/workflows/ # GitHub Actions configuration
 ```
 
+## Getting Started
+
+You can either download the project as a ZIP archive from GitHub or clone it with Git:
+
+```bash
+# Option A: download the repository ZIP from GitHub and extract it locally
+
+# Option B: clone via Git
+git clone https://github.com/<your-account>/FitTrack-SA.git
+cd FitTrack-SA
+```
+
+Once the files are on your machine follow the steps below to run the backend API and, optionally, the Android client.
+
 ## Backend Prototype
 
 The backend is built with FastAPI and SQLAlchemy using an async SQLite database (ready to upgrade to PostgreSQL for hosting). Features include:
@@ -25,10 +39,22 @@ The backend is built with FastAPI and SQLAlchemy using an async SQLite database 
 
 ### Running Locally
 
-1. Install Poetry (or use `pipx install poetry`).
-2. Install dependencies: `cd backend && poetry install`.
-3. Start the API: `poetry run uvicorn app.main:app --reload`.
-4. Access the interactive docs at `http://localhost:8000/docs`.
+#### Requirements
+- Python 3.11+
+- [Poetry](https://python-poetry.org/docs/#installation) **or** a virtual environment with `pip`
+
+#### Setup with Poetry (recommended)
+1. `cd backend`
+2. `poetry install`
+3. `poetry run uvicorn app.main:app --reload`
+4. Visit `http://localhost:8000/docs` to exercise the REST endpoints.
+
+#### Setup with pip
+1. `cd backend`
+2. `python -m venv .venv && source .venv/bin/activate`
+3. `pip install -r requirements.txt`
+4. `uvicorn app.main:app --reload`
+5. Open `http://localhost:8000/docs`
 
 > **SSO configuration**: Set `GOOGLE_CLIENT_ID` in the environment (or `.env`) to enable Google Sign-In token verification. Without the variable the API returns `503` for the SSO endpoint, keeping tests deterministic.
 
@@ -36,7 +62,10 @@ The backend is built with FastAPI and SQLAlchemy using an async SQLite database 
 
 ```
 cd backend
+# if you used Poetry
 poetry run pytest
+# if you used pip
+pytest
 ```
 
 The suite registers users, exercises the activity/nutrition flows, and validates settings updates and badge awarding.
@@ -52,6 +81,13 @@ The `mobile/` folder documents the Android app architecture and supplies starter
 - Settings with bilingual language toggle (English/isiZulu) and notification switches.
 
 See `mobile/README.md` for details on building the Android module inside Android Studio.
+
+### Quickstart (Android Studio)
+1. Install [Android Studio Iguana or newer](https://developer.android.com/studio).
+2. From the Android Studio welcome screen choose **Open**, navigate to the repository root, and select it.
+3. When prompted, let Gradle download dependencies. If you need to override the backend URL, set `FITTRACK_BASE_URL` in `local.properties`.
+4. Connect an Android device or start an emulator, then press **Run ▶** on the `app` configuration.
+5. Sign up with email/password via the backend running locally (or your hosted instance). Google SSO becomes available once you supply a valid `google-services.json`.
 
 ## Documentation
 
