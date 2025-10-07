@@ -30,8 +30,9 @@ Create a `local.properties` entry or Gradle `resValue` for `FITTRACK_BASE_URL` p
 
 ## Running the App
 1. Open the `mobile` project root in Android Studio Iguana or newer.
-2. When prompted, let Android Studio download the Gradle wrapper and Android Gradle Plugin dependencies (the project is configured for AGP 8.3.2 / Gradle 8.6).
-3. Use the "app" run configuration to launch on an emulator or device.
-4. Create a test account via email/password or login with Google SSO once configured.
+2. The repository ships with wrapper scripts that download Gradle 8.4 and the Android Gradle Plugin the first time you sync. Android Studio will invoke `gradlew.bat` automatically on Windows or `gradlew` on macOS/Linux/Git Bash.
+3. From the command line you can trigger builds with `./gradlew assembleDebug` (macOS/Linux) or `.\gradlew.bat assembleDebug` (Windows).
+4. Use the "app" run configuration to launch on an emulator or device once dependencies finish syncing.
+5. Create a test account via email/password or login with Google SSO once configured.
 
 The prototype currently focuses on UI and data flows rather than polished visuals. Wireframes and copy can be updated based on pilot feedback.

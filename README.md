@@ -85,9 +85,11 @@ See `mobile/README.md` for details on building the Android module inside Android
 ### Quickstart (Android Studio)
 1. Install [Android Studio Iguana or newer](https://developer.android.com/studio).
 2. From the Android Studio welcome screen choose **Open**, navigate to the repository root, and select it.
-3. When prompted, let Gradle download dependencies. If you need to override the backend URL, set `FITTRACK_BASE_URL` in `local.properties`.
+3. Android Studio uses the bundled wrapper scripts under `mobile/` to download Gradle 8.4 and the Android Gradle Plugin the first time you sync. If you need to override the backend URL, set `FITTRACK_BASE_URL` in `local.properties`.
 4. Connect an Android device or start an emulator, then press **Run ▶** on the `app` configuration.
 5. Sign up with email/password via the backend running locally (or your hosted instance). Google SSO becomes available once you supply a valid `google-services.json`.
+
+> **Command-line builds**: Run `cd mobile && ./gradlew tasks` (macOS/Linux/Git Bash) or `cd mobile && .\gradlew.bat tasks` (Windows PowerShell/CMD). The scripts download Gradle on first run and cache it under `mobile/.gradle/` if `GRADLE_USER_HOME` is not already set.
 
 ## Documentation
 

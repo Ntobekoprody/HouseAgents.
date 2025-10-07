@@ -9,6 +9,7 @@ poetry.lock
 
 # Android/Gradle
 .gradle/
+mobile/.gradle/
 /local.properties
 /.idea/
 *.iml
