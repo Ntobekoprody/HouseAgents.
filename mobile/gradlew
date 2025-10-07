@@ -1,0 +1,73 @@
+#!/usr/bin/env sh
+set -e
+
+APP_HOME=$(cd "$(dirname "$0")"; pwd -P)
+WRAPPER_PROPERTIES="$APP_HOME/gradle/wrapper/gradle-wrapper.properties"
+
+if [ ! -f "$WRAPPER_PROPERTIES" ]; then
+  echo "Gradle wrapper properties not found at $WRAPPER_PROPERTIES" >&2
+  exit 1
+fi
+
+distributionUrl=$(grep "^distributionUrl=" "$WRAPPER_PROPERTIES" | cut -d'=' -f2-)
+distributionUrl=$(printf '%s' "$distributionUrl" | sed 's#\\:#:#g')
+
+if [ -z "$distributionUrl" ]; then
+  echo "distributionUrl missing from $WRAPPER_PROPERTIES" >&2
+  exit 1
+fi
+
+distFileName=$(basename "$distributionUrl")
+wrapperCacheDir="${GRADLE_USER_HOME:-$APP_HOME/.gradle}"/wrapper/dists
+distDir="$wrapperCacheDir/${distFileName%.zip}"
+archivePath="$wrapperCacheDir/$distFileName"
+
+mkdir -p "$wrapperCacheDir"
+
+if [ ! -f "$archivePath" ]; then
+  if command -v curl >/dev/null 2>&1; then
+    echo "Downloading Gradle from $distributionUrl" >&2
+    if ! curl -fL "$distributionUrl" -o "$archivePath"; then
+      echo "Failed to download Gradle distribution" >&2
+      rm -f "$archivePath"
+      exit 1
+    fi
+  elif command -v wget >/dev/null 2>&1; then
+    echo "Downloading Gradle from $distributionUrl" >&2
+    if ! wget "$distributionUrl" -O "$archivePath"; then
+      echo "Failed to download Gradle distribution" >&2
+      rm -f "$archivePath"
+      exit 1
+    fi
+  else
+    echo "Neither curl nor wget is available to download Gradle." >&2
+    exit 1
+  fi
+fi
+
+if [ ! -d "$distDir" ]; then
+  tmpDir="$distDir.tmp"
+  rm -rf "$tmpDir"
+  mkdir -p "$tmpDir"
+  echo "Extracting Gradle to $distDir" >&2
+  if command -v unzip >/dev/null 2>&1; then
+    if ! unzip -q "$archivePath" -d "$tmpDir"; then
+      echo "Failed to extract Gradle distribution" >&2
+      rm -rf "$tmpDir"
+      exit 1
+    fi
+  else
+    echo "unzip command is required to extract Gradle." >&2
+    exit 1
+  fi
+  mv "$tmpDir"/* "$distDir"
+  rm -rf "$tmpDir"
+fi
+
+GRADLE_HOME=$(ls -d "$distDir"/gradle-* 2>/dev/null | head -n 1)
+if [ -z "$GRADLE_HOME" ]; then
+  echo "Could not locate Gradle installation under $distDir" >&2
+  exit 1
+fi
+
+exec "$GRADLE_HOME/bin/gradle" -p "$APP_HOME" "$@"

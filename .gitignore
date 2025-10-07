@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+backend/.venv/
+
+# Poetry
+poetry.lock
+
+# Android/Gradle
+.gradle/
+mobile/.gradle/
+/local.properties
+/.idea/
+*.iml
+build/
+*.apk
+
+# macOS
+.DS_Store
